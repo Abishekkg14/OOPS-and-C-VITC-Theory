@@ -1,0 +1,63 @@
+/*Create a class named TaxPayer. Data fields for TaxPayer include Social Security Number
+(SSN- use an int for the type), and yearly gross income. Methods include a constructor
+that requires values for both data fields, and two get methods that return each of the data
+field. The SSN starts from 100000 and increases by 1 for the next TaxPayer. Use static block
+static variable wherever is applicable.
+Write a program named UseTaxPayer that declares an array of 10 TaxPayer objects. Set
+SSN and gross income. Display the 10 TaxPayer objects.*/
+
+
+#include <iostream>
+
+using namespace std;
+
+class TaxPayer {
+private:
+    int ssn;
+    double yearlyGrossIncome;
+    static int nextSSN; // Static variable to keep track of next SSN
+    
+public:
+    // Constructor
+    TaxPayer(double income) : yearlyGrossIncome(income) {
+        ssn = nextSSN++;
+    }
+    
+    // Getter methods
+    int getSSN() const {
+        return ssn;
+    }
+    
+    double getYearlyGrossIncome() const {
+        return yearlyGrossIncome;
+    }
+};
+
+int TaxPayer::nextSSN = 100000; // Initialize static variable
+
+int main() {
+    TaxPayer taxpayers[10] = {
+        TaxPayer(10000.0),
+        TaxPayer(20000.0),
+        TaxPayer(30000.0),
+        TaxPayer(40000.0),
+        TaxPayer(50000.0),
+        TaxPayer(60000.0),
+        TaxPayer(70000.0),
+        TaxPayer(80000.0),
+        TaxPayer(90000.0),
+        TaxPayer(100000.0)
+    }; // Array of 10 TaxPayer objects with gross income initialized
+    
+    // Display the 10 TaxPayer objects
+    cout << "\nTaxPayer Details:\n";
+    for (int i = 0; i < 10; ++i) {
+        cout << "TaxPayer " << i + 1 << ":\n";
+        cout << "SSN: " << taxpayers[i].getSSN() << endl;
+        cout << "Yearly Gross Income: $" << taxpayers[i].getYearlyGrossIncome() << endl;
+        cout << endl;
+    }
+    
+    return 0;
+}
+
