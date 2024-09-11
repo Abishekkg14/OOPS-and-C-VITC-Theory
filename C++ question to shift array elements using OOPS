@@ -1,0 +1,80 @@
+/*Construct a C++ program utilizing constructors and destructors to manipulate an array of non-negative integers, 'arr', by cyclically shifting its elements to the right by k positions. For instance, given an input array arr = [1,2,3,4,5,6,7] and a shift value k = 3, the program should output the transformed array [5,6,7,1,2,3,4].
+Define a class Array with the following methods:
+Methods:
+Constructor Array(int size) (2 Marks)
+Destructor ~Array() (1 Mark)
+Method input() (1 Mark)
+Method shiftRight(int k)
+(5 Marks)
+Method display()*/
+
+#include <iostream>
+
+class Array {
+private:
+    int *arr;
+    int size;
+
+public:
+    // Constructor
+    Array(int size) {
+        this->size = size;
+        arr = new int[size];
+    }
+
+    // Destructor
+    ~Array() {
+        delete[] arr;
+    }
+
+    // Method to input array elements
+    void input() {
+        std::cout << "Enter " << size << " non-negative integers: ";
+        for (int i = 0; i < size; ++i) {
+            std::cin >> arr[i];
+            if (arr[i] < 0) {
+                std::cout << "Error: Input must be non-negative integers.\n";
+                exit(1);
+            }
+        }
+    }
+
+    // Method to cyclically shift elements to the right by k positions
+    void shiftRight(int k) {
+        k = k % size; // Normalize k in case it's larger than size
+        int *temp = new int[size];
+        for (int i = 0; i < size; ++i) {
+            temp[(i + k) % size] = arr[i];
+        }
+        for (int i = 0; i < size; ++i) {
+            arr[i] = temp[i];
+        }
+        delete[] temp;
+    }
+
+    // Method to display the array
+    void display() {
+        std::cout << "Array elements: ";
+        for (int i = 0; i < size; ++i) {
+            std::cout << arr[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+};
+
+int main() {
+    int size, k;
+    std::cout << "Enter the size of the array: ";
+    std::cin >> size;
+
+    Array arr(size);
+    arr.input();
+
+    std::cout << "Enter the number of positions to shift right: ";
+    std::cin >> k;
+
+    arr.shiftRight(k);
+    arr.display();
+
+    return 0;
+}
