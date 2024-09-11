@@ -1,0 +1,53 @@
+/*Write a program that, given a date, three ints (for example, 11 27 1997), will print the
+number of that day within its year: i.e. Jan 1st is always 1, Dec 31st is either 365 or 366.
+The months of the year have lengths according to the following rules:
+The odd months up to and including month 7 have 31 days.
+The even months from 8 upwards, have 31 days.
+Month 2 has 28 days except in a leap year when it has 29 days.
+The rest of the months have 30 days.*/
+
+
+#include <stdio.h>
+
+// Function to check if a year is a leap year
+int isLeapYear(int year) {
+    if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
+        return 1; // Leap year
+    else
+        return 0; // Not a leap year
+}
+
+// Function to calculate the day number within the year
+int dayNumber(int month, int day, int year) {
+    int days_in_month[] = {31, 28 + isLeapYear(year), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    int day_num = 0;
+    
+    for (int i = 0; i < month - 1; i++) {
+        day_num += days_in_month[i];
+    }
+    
+    day_num += day;
+    
+    return day_num;
+}
+
+int main() {
+    int month, day, year;
+    
+    // Input the date
+    printf("Enter the date (month day year): ");
+    scanf("%d %d %d", &month, &day, &year);
+    
+    // Validate the input
+    if (month < 1 || month > 12 || day < 1 || day > 31 || year < 0) {
+        printf("Invalid date\n");
+        return 1;
+    }
+    
+    // Calculate and print the day number within the year
+    int day_num = dayNumber(month, day, year);
+    printf("The day number within the year is: %d\n", day_num);
+    
+    return 0;
+}
+
