@@ -1,0 +1,142 @@
+/*Design a C++ program utilizing friend functions and static member functions to manage employee data and sales performance. The program comprises two classes: "Employee and "Sales". The Employee class is tasked with reading and printing employee information, encompassing the employee's name, ID, department, and monthly salary. On the other hand, the Sales Class reads and prints employee details, calculates incentives based on sales performance, and assigns performance indicators to employees based on their total sales in a month.
+
+a) The Sales class computes incentives acquired by employees based on monthly sales: 10% of the monthly salary if units sold range between 50 and
+
+100
+
+20% of the monthly salary if units sold fall between 101 and 150-
+
+30% of the monthly salary if more than 150 units are sold.
+
+b) The Sales class assigns performance indicators to employees according to their total sales in a month, adhering to the following criteria:
+
+Sales above 150: Excellent
+
+Sales between 101 and 150: Good
+
+Sales ranging from 50 to 100: Satisfactory
+
+Sales below 50: Poor.
+
+Write the main() function to implement the friend class and execute the necessary operations. [5+5 Marks]*/
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Sales {
+private:
+    static float monthlySalary;
+    static int unitsSold;
+
+public:
+    static void setMonthlySalary(float salary) {
+        monthlySalary = salary;
+    }
+
+    static void setUnitsSold(int units) {
+        unitsSold = units;
+    }
+
+    static void computeIncentives() {
+        float incentives = 0.0;
+        if (unitsSold >= 50 && unitsSold <= 100) {
+            incentives = 0.1 * monthlySalary;
+        } else if (unitsSold > 100 && unitsSold <= 150) {
+            incentives = 0.2 * monthlySalary;
+        } else if (unitsSold > 150) {
+            incentives = 0.3 * monthlySalary;
+        }
+        cout << "Incentives: $" << incentives << endl;
+    }
+
+    static void assignPerformance() {
+        cout << "Performance Indicator: ";
+        if (unitsSold > 150) {
+            cout << "Excellent" << endl;
+        } else if (unitsSold > 100) {
+            cout << "Good" << endl;
+        } else if (unitsSold >= 50) {
+            cout << "Satisfactory" << endl;
+        } else {
+            cout << "Poor" << endl;
+        }
+    }
+
+    friend class Employee; // Declaring Employee class as a friend
+};
+
+float Sales::monthlySalary = 0.0;
+int Sales::unitsSold = 0;
+
+class Employee {
+private:
+    string name;
+    int ID;
+    string department;
+
+public:
+    Employee(string name, int ID, string department) : name(name), ID(ID), department(department) {}
+
+    void printEmployeeInfo() {
+        cout << "Name: " << name << endl;
+        cout << "ID: " << ID << endl;
+        cout << "Department: " << department << endl;
+        cout << "Monthly Salary: $" << Sales::monthlySalary << endl;
+    }
+
+    void computeSalesIncentives() {
+        Sales::computeIncentives();
+    }
+
+    void assignSalesPerformance() {
+        Sales::assignPerformance();
+    }
+};
+
+int main() {
+    string name, department;
+    int ID, unitsSold;
+    float monthlySalary;
+
+    cout << "Enter employee name: ";
+    getline(cin, name);
+    cout << "Enter employee ID: ";
+    cin >> ID;
+    cin.ignore();
+    cout << "Enter employee department: ";
+    getline(cin, department);
+    cout << "Enter monthly salary: $";
+    cin >> monthlySalary;
+    cout << "Enter units sold: ";
+    cin >> unitsSold;
+
+    Sales::setMonthlySalary(monthlySalary);
+    Sales::setUnitsSold(unitsSold);
+
+    Employee emp(name, ID, department);
+    emp.printEmployeeInfo();
+
+    emp.computeSalesIncentives();
+    emp.assignSalesPerformance();
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
