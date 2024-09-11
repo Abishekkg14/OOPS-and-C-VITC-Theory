@@ -1,0 +1,161 @@
+/*Design a Super Market Billing system using Structures in C Programming. Store the details of a Bill (Bill number, Total Bill Amount, Customer Details, No of Products, Product Details) using a structure. To store the details of Customer (Customer ID, Name, Address, Phone Number) and Product(Product ID, Name, Price, Qty) use separate structures within the Bill structure.
+A customer can buy multiple products. Perform each of the following operations using a separate user-defined function. Let the required functions take the structure variable as argument.
+Use pointers to access the structure and allocate the memory dynamically. (1mark)
+1) Read the necessary input details of the bill for customer and customer 2 (2 marks)
+2) Display the bill of customer with his details and all the product details including amount of each product along with bill number and total bill amount. (2 marks)
+3) Display the details of the costliest and the cheapest product bought from the customer will. (3 marks)
+4) Sum up the total bill amount of both the customers and display their bill details along with the sum. (2 marks)*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Structure for Product Details
+struct Product {
+    int product_id;
+    char name[50];
+    float price;
+    int quantity;
+};
+
+// Structure for Customer Details
+struct Customer {
+    int customer_id;
+    char name[50];
+    char address[100];
+    char phone_number[15];
+};
+
+// Structure for Bill
+struct Bill {
+    int bill_number;
+    float total_bill_amount;
+    struct Customer customer_details;
+    int num_products;
+    struct Product *products;
+};
+
+// Function to clear input buffer
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+// Function to read details of a customer
+void readCustomerDetails(struct Customer *customer) {
+    printf("Enter Customer ID: ");
+    scanf("%d", &customer->customer_id);
+    clearInputBuffer();  // Clear buffer before reading strings
+    
+    printf("Enter Customer Name: ");
+    scanf(" %[^\n]", customer->name); // Read full name with spaces
+    
+    printf("Enter Customer Address: ");
+    scanf(" %[^\n]", customer->address); // Read full address
+    
+    printf("Enter Customer Phone Number: ");
+    scanf("%s", customer->phone_number); // No need for clearing buffer as next input is a string
+}
+
+// Function to read details of products
+void readProductDetails(struct Product *product) {
+    printf("Enter Product ID: ");
+    scanf("%d", &product->product_id);
+    clearInputBuffer(); // Clear buffer before reading strings
+
+    printf("Enter Product Name: ");
+    scanf(" %[^\n]", product->name); // Read product name with spaces
+
+    printf("Enter Product Price: ");
+    scanf("%f", &product->price);
+    clearInputBuffer(); // Clear buffer before reading integers
+
+    printf("Enter Product Quantity: ");
+    scanf("%d", &product->quantity);
+    clearInputBuffer(); // Clear buffer after the last input
+}
+
+// Function to read bill details
+void readBillDetails(struct Bill *bill) {
+    printf("Enter Bill Number: ");
+    scanf("%d", &bill->bill_number);
+    clearInputBuffer(); // Clear buffer before next input
+
+    printf("Enter Total Bill Amount: ");
+    scanf("%f", &bill->total_bill_amount);
+    clearInputBuffer(); // Clear buffer before next input
+
+    readCustomerDetails(&bill->customer_details);
+    
+    printf("Enter Number of Products: ");
+    scanf("%d", &bill->num_products);
+    clearInputBuffer(); // Clear buffer before reading product details
+    
+    bill->products = (struct Product *)malloc(bill->num_products * sizeof(struct Product));
+    if (bill->products == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    
+    for (int i = 0; i < bill->num_products; i++) {
+        printf("Enter details for product %d:\n", i + 1);
+        readProductDetails(&bill->products[i]);
+    }
+}
+
+// Function to display bill details
+void displayBill(struct Bill *bill) {
+    printf("Bill Number: %d\n", bill->bill_number);
+    printf("Total Bill Amount: %.2f\n", bill->total_bill_amount);
+    printf("Customer Details:\n");
+    printf("Customer ID: %d\n", bill->customer_details.customer_id);
+    printf("Name: %s\n", bill->customer_details.name);
+    printf("Address: %s\n", bill->customer_details.address);
+    printf("Phone Number: %s\n", bill->customer_details.phone_number);
+    printf("Product Details:\n");
+    for (int i = 0; i < bill->num_products; i++) {
+        printf("Product %d:\n", i + 1);
+        printf("Product ID: %d\n", bill->products[i].product_id);
+        printf("Name: %s\n", bill->products[i].name);
+        printf("Price: %.2f\n", bill->products[i].price);
+        printf("Quantity: %d\n", bill->products[i].quantity);
+        printf("Amount: %.2f\n", bill->products[i].price * bill->products[i].quantity);
+    }
+}
+
+// Function to free dynamically allocated memory
+void freeMemory(struct Bill *bills, int num_bills) {
+    for (int i = 0; i < num_bills; i++) {
+        free(bills[i].products);
+    }
+}
+
+int main() {
+    int num_bills;
+    
+    printf("Enter the number of bills: ");
+    scanf("%d", &num_bills);
+    clearInputBuffer();  // Clear input buffer after reading the integer
+
+    struct Bill *bills = (struct Bill *)malloc(num_bills * sizeof(struct Bill));
+    if (bills == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    
+    for (int i = 0; i < num_bills; i++) {
+        printf("\nEnter details for Bill %d:\n", i + 1);
+        readBillDetails(&bills[i]);
+    }
+    
+    for (int i = 0; i < num_bills; i++) {
+        printf("\nBill %d Details:\n", i + 1);
+        displayBill(&bills[i]);
+    }
+    
+    // Free dynamically allocated memory
+    freeMemory(bills, num_bills);
+    free(bills);
+    
+    return 0;
+}
